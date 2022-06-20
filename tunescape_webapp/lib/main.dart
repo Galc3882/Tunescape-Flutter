@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // hide keyboard in case of overflow
-    final isKeyboard = MediaQuery.of(context).viewInsets.bottom != false;
+    // final isKeyboard = MediaQuery.of(context).viewInsets.bottom != false;
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
         primarySwatch: Colors.orange,
-        // scaffoldBackgroundColor: Color.fromRGBO(45, 93, 170, 1),
+        scaffoldBackgroundColor: const Color.fromRGBO(45, 93, 170, 1),
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
