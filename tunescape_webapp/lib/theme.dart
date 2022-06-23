@@ -17,7 +17,7 @@ const lightColorScheme = ColorScheme(
   onPrimary: Color(0xFFFFFFFF),
   primaryContainer: Color(0xFFD7E2FF),
   onPrimaryContainer: Color(0xFF001A40),
-  secondary: Color(0xFF315DA8),
+  secondary: Color(0xFF002E69),
   onSecondary: Color(0xFFFFFFFF),
   secondaryContainer: Color(0xFFD8E2FF),
   onSecondaryContainer: Color(0xFF001A41),
@@ -42,13 +42,17 @@ const lightColorScheme = ColorScheme(
   shadow: Color(0xFF000000),
   surfaceTint: Color(0xFF2D5DAA),
 );
+
 final lightTextScheme = TextTheme(
   titleLarge: TextStyle(fontSize: 108.0, color: lightColorScheme.onPrimary),
+  titleMedium: TextStyle(fontSize: 56.0, color: lightColorScheme.onPrimary),
   displayMedium: TextStyle(
       fontSize: 502.0,
       fontWeight: FontWeight.bold,
       color: lightColorScheme.onPrimary),
-  bodyMedium: TextStyle(fontSize: 104.0, color: lightColorScheme.onPrimary),
+  bodyLarge: TextStyle(fontSize: 44.0, color: lightColorScheme.error),
+  bodyMedium: TextStyle(fontSize: 28.0, color: lightColorScheme.onPrimary),
+  bodySmall: const TextStyle(fontSize: 20.0, color: Colors.black),
   labelSmall: TextStyle(
       fontSize: 18.0, color: lightColorScheme.outline, letterSpacing: 0.2),
 );
@@ -86,11 +90,14 @@ const darkColorScheme = ColorScheme(
 );
 final darkTextScheme = TextTheme(
   titleLarge: TextStyle(fontSize: 108.0, color: darkColorScheme.onPrimary),
+  titleMedium: TextStyle(fontSize: 56.0, color: darkColorScheme.onPrimary),
   displayMedium: TextStyle(
       fontSize: 502.0,
       fontWeight: FontWeight.bold,
       color: lightColorScheme.onPrimary),
-  bodyMedium: TextStyle(fontSize: 104.0, color: darkColorScheme.onPrimary),
+  bodyLarge: TextStyle(fontSize: 44.0, color: darkColorScheme.error),
+  bodyMedium: TextStyle(fontSize: 28.0, color: darkColorScheme.onPrimary),
+  bodySmall: TextStyle(fontSize: 20.0, color: darkColorScheme.onPrimary),
   labelSmall: TextStyle(
       fontSize: 18.0, color: darkColorScheme.outline, letterSpacing: 0.2),
 );
