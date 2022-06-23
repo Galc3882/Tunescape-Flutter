@@ -49,7 +49,8 @@ final lightTextScheme = TextTheme(
       fontWeight: FontWeight.bold,
       color: lightColorScheme.onPrimary),
   bodyMedium: TextStyle(fontSize: 104.0, color: lightColorScheme.onPrimary),
-  labelSmall: TextStyle(fontSize: 16.0, color: lightColorScheme.inverseSurface),
+  labelSmall: TextStyle(
+      fontSize: 18.0, color: lightColorScheme.outline, letterSpacing: 0.2),
 );
 
 const darkColorScheme = ColorScheme(
@@ -90,5 +91,6 @@ final darkTextScheme = TextTheme(
       fontWeight: FontWeight.bold,
       color: lightColorScheme.onPrimary),
   bodyMedium: TextStyle(fontSize: 104.0, color: darkColorScheme.onPrimary),
-  labelSmall: TextStyle(fontSize: 20.0, color: darkColorScheme.inverseSurface),
+  labelSmall: TextStyle(
+      fontSize: 18.0, color: darkColorScheme.outline, letterSpacing: 0.2),
 );
