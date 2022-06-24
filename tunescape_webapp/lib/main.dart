@@ -14,12 +14,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Tunescape',
-      theme: MediaQuery.of(context).platformBrightness == Brightness.dark
-          ? darkTheme
-          : lightTheme,
-      home: const MyHomePage(),
-    );
+        title: 'Tunescape',
+        theme: MediaQuery.of(context).platformBrightness == Brightness.dark
+            ? darkTheme
+            : lightTheme,
+        home: GestureDetector(
+            onTap: () {
+              FocusScope.of(context).requestFocus(FocusNode());
+              TextEditingController().clear();
+            },
+            child: const MyHomePage()));
   }
 }
 
@@ -74,13 +78,19 @@ class SearchBar extends StatefulWidget {
 class _SearchBar extends State<SearchBar> {
   final TextEditingController _controller = TextEditingController();
   bool isSearchButtonDisabled = true;
-  bool hasSearchFocus = true;
+  bool hasSearchFocus = false;
 
   @override
   void initState() {
     super.initState();
     isSearchButtonDisabled = true;
-    hasSearchFocus = true;
+    hasSearchFocus = false;
+
+    //!aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    _controller.text = 'dart';
+    isSearchButtonDisabled = false;
+    hasSearchFocus = false;
+    //!aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 
     if (widget.query != null) {
       _controller.text = widget.query!;
@@ -110,7 +120,9 @@ class _SearchBar extends State<SearchBar> {
                     ? 35
                     : 45,
                 decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.secondaryContainer,
+                    color: hasSearchFocus
+                        ? Theme.of(context).colorScheme.onPrimary
+                        : Theme.of(context).colorScheme.secondaryContainer,
                     borderRadius:
                         const BorderRadius.all(Radius.circular(25.7))),
                 child: Padding(
@@ -156,9 +168,18 @@ class _SearchBar extends State<SearchBar> {
                                         splashColor: Colors.transparent,
                                         hoverColor: Colors.transparent,
                                         padding: EdgeInsets.zero,
-                                        onPressed: () =>
-                                            submitQuery(_controller.text),
-                                        icon: const Icon(Icons.search))
+                                        onPressed: () {
+                                          submitQuery(_controller.text);
+                                          FocusScope.of(context)
+                                              .requestFocus(FocusNode());
+                                          TextEditingController().clear();
+                                        },
+                                        icon: Icon(
+                                          Icons.search,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                        ))
                                     : IconButton(
                                         highlightColor: Colors.transparent,
                                         splashColor: Colors.transparent,
@@ -171,7 +192,11 @@ class _SearchBar extends State<SearchBar> {
                                           _controller.text = '';
                                         },
                                         icon: const Icon(Icons.close))
-                                : const Icon(Icons.search),
+                                : Icon(
+                                    Icons.search,
+                                    color:
+                                        Theme.of(context).colorScheme.outline,
+                                  ),
                           ),
                         ),
                         hintText: myChildSize == Size.zero
@@ -192,6 +217,8 @@ class _SearchBar extends State<SearchBar> {
                               });
                       },
                       onFieldSubmitted: (String? value) {
+                        FocusScope.of(context).requestFocus(FocusNode());
+                        TextEditingController().clear();
                         submitQuery(value ?? '');
                       },
                       // validator: (String? value) {
@@ -212,11 +239,16 @@ class _SearchBar extends State<SearchBar> {
   void submitQuery(String query) {
     if (query.isNotEmpty && query != '') {
       Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => SearchResults(query: query),
-        ),
-      );
+          context,
+          MaterialPageRoute(
+            builder: (context) => GestureDetector(
+              onTap: () {
+                FocusScope.of(context).requestFocus(FocusNode());
+                TextEditingController().clear();
+              },
+              child: SearchResults(query: query),
+            ),
+          ));
     }
   }
 

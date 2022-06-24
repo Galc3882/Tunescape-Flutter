@@ -163,13 +163,6 @@ class _SearchResultsContainer extends State<SearchResultsContainer> {
         heightFactor: 0.95,
         child: Container(
           decoration: BoxDecoration(
-              // gradient:
-              // RadialGradient(
-              //     radius: MediaQuery.of(context).size.width / 4 - 200,
-              //     colors: [
-              //       Theme.of(context).colorScheme.primaryContainer,
-              //       Theme.of(context).colorScheme.secondary
-              //     ]),
               color: Theme.of(context).colorScheme.secondary,
               borderRadius: const BorderRadius.all(Radius.circular(3.0))),
           child: Center(
@@ -177,15 +170,20 @@ class _SearchResultsContainer extends State<SearchResultsContainer> {
                 ? widget.results[0].length == 1
                     ? Text(widget.results[0][0],
                         style: Theme.of(context).textTheme.bodyLarge)
-                    : ListView.builder(
-                        // shrinkWrap: true,
-                        itemCount: widget.results.length,
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            title: Text(widget.results[index][0],
-                                style: Theme.of(context).textTheme.bodyMedium),
-                          );
-                        },
+                    : Material(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(3.0)),
+                        color: Theme.of(context).colorScheme.secondary,
+                        child: ClipRRect(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(3.0)),
+                          child: ListView.builder(
+                            itemCount: widget.results.length,
+                            itemBuilder: (context, index) {
+                              return listItem(context, index);
+                            },
+                          ),
+                        ),
                       )
                 : SizedBox(
                     height: 60.0,
@@ -197,6 +195,55 @@ class _SearchResultsContainer extends State<SearchResultsContainer> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget listItem(context, index) {
+    return Column(
+      children: [
+        index == 0
+            ? const SizedBox.shrink()
+            : Center(
+                child: Container(
+                height: 1.0,
+                width: (MediaQuery.of(context).size.width < 450 ||
+                        MediaQuery.of(context).size.height < 450)
+                    ? MediaQuery.of(context).size.width - 50.0
+                    : MediaQuery.of(context).size.width - 100.0,
+                color: Theme.of(context).colorScheme.outline,
+              )),
+        ListTile(
+          hoverColor: Theme.of(context).colorScheme.onTertiary,
+          selectedTileColor: Theme.of(context).colorScheme.onTertiaryContainer,
+          contentPadding: (MediaQuery.of(context).size.width < 450 ||
+                  MediaQuery.of(context).size.height < 450)
+              ? const EdgeInsets.symmetric(horizontal: 5.0)
+              : const EdgeInsets.symmetric(horizontal: 10.0),
+          leading: Container(
+            width: 70,
+            height: 70,
+            color: Colors.white,
+            child: const Center(
+              child: Icon(
+                Icons.music_note,
+                size: 30,
+              ),
+            ),
+          ),
+          title: Text(widget.results[index][0],
+              style: Theme.of(context).textTheme.bodyMedium),
+          subtitle: Text(
+            widget.results[index][1],
+            style: Theme.of(context).textTheme.bodyMedium,
+            textScaleFactor: 0.6,
+          ),
+          trailing: const Icon(Icons.food_bank),
+          tileColor: Theme.of(context).colorScheme.secondary,
+          onTap: () {
+            print(index);
+          },
+        ),
+      ],
     );
   }
 }
