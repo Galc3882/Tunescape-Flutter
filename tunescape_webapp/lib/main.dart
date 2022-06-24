@@ -4,8 +4,6 @@ import 'theme.dart';
 import 'widget_size.dart';
 import 'search_results.dart';
 
-int mobileWidth = 450;
-
 void main() {
   runApp(const MediaQuery(data: MediaQueryData(), child: MyApp()));
 }
@@ -15,10 +13,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // hide keyboard in case of overflow
-    // final isKeyboard = MediaQuery.of(context).viewInsets.bottom != false;
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Tunescape',
       theme: MediaQuery.of(context).platformBrightness == Brightness.dark
           ? darkTheme
           : lightTheme,
@@ -102,14 +98,17 @@ class _SearchBar extends State<SearchBar> {
           });
         },
         child: Padding(
-          padding: MediaQuery.of(context).size.width < mobileWidth
+          padding: (MediaQuery.of(context).size.width < 450 ||
+                  MediaQuery.of(context).size.height < 450)
               ? const EdgeInsets.only(left: 10.0, right: 10.0)
               : const EdgeInsets.only(left: 35.0, right: 35.0),
           child: SizedBox(
             width: widget.width,
             child: Container(
-                height:
-                    MediaQuery.of(context).size.width < mobileWidth ? 35 : 50,
+                height: (MediaQuery.of(context).size.width < 450 ||
+                        MediaQuery.of(context).size.height < 450)
+                    ? 35
+                    : 45,
                 decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.secondaryContainer,
                     borderRadius:
@@ -135,9 +134,10 @@ class _SearchBar extends State<SearchBar> {
                       style: Theme.of(context).textTheme.bodySmall,
                       decoration: InputDecoration(
                         contentPadding:
-                            MediaQuery.of(context).size.width < mobileWidth
+                            (MediaQuery.of(context).size.width < 450 ||
+                                    MediaQuery.of(context).size.height < 450)
                                 ? const EdgeInsets.only(top: -15.0)
-                                : const EdgeInsets.only(top: 0.0),
+                                : const EdgeInsets.only(top: -4.0),
                         border: InputBorder.none,
                         focusedBorder: InputBorder.none,
                         enabledBorder: InputBorder.none,
@@ -176,9 +176,10 @@ class _SearchBar extends State<SearchBar> {
                         ),
                         hintText: myChildSize == Size.zero
                             ? 'Search for a song...'
-                            : myChildSize.width > mobileWidth
-                                ? 'Search for a song... or piece... or artist...'
-                                : 'Search for a song...',
+                            : (MediaQuery.of(context).size.width < 450 ||
+                                    MediaQuery.of(context).size.height < 450)
+                                ? 'Search for a song...'
+                                : 'Search for a song... or piece... or artist...',
                         hintStyle: Theme.of(context).textTheme.labelSmall,
                       ),
                       onChanged: (String? value) {
