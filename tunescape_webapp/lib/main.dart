@@ -79,18 +79,20 @@ class _SearchBar extends State<SearchBar> {
   final TextEditingController _controller = TextEditingController();
   bool isSearchButtonDisabled = true;
   bool hasSearchFocus = false;
+  bool hasHover = false;
 
   @override
   void initState() {
     super.initState();
     isSearchButtonDisabled = true;
     hasSearchFocus = false;
+    hasHover = false;
 
-    //!aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-    _controller.text = 'dart';
-    isSearchButtonDisabled = false;
-    hasSearchFocus = false;
-    //!aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    // //!aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    // _controller.text = 'dart';
+    // isSearchButtonDisabled = false;
+    // hasSearchFocus = false;
+    // //!aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 
     if (widget.query != null) {
       _controller.text = widget.query!;
@@ -115,122 +117,123 @@ class _SearchBar extends State<SearchBar> {
           child: SizedBox(
             width: widget.width,
             child: Container(
-                height: (MediaQuery.of(context).size.width < 450 ||
-                        MediaQuery.of(context).size.height < 450)
-                    ? 35
-                    : 45,
-                decoration: BoxDecoration(
-                    color: hasSearchFocus
-                        ? Theme.of(context).colorScheme.onPrimary
-                        : Theme.of(context).colorScheme.secondaryContainer,
-                    borderRadius:
-                        const BorderRadius.all(Radius.circular(25.7))),
-                child: Padding(
+              height: (MediaQuery.of(context).size.width < 450 ||
+                      MediaQuery.of(context).size.height < 450)
+                  ? 35
+                  : 45,
+              decoration: BoxDecoration(
+                  color: hasSearchFocus || hasHover
+                      ? Theme.of(context).colorScheme.onPrimary
+                      : Theme.of(context).colorScheme.primaryContainer,
+                  borderRadius: const BorderRadius.all(Radius.circular(25.7))),
+              child: Padding(
                   padding: const EdgeInsets.only(right: 10),
                   child: Focus(
                     onFocusChange: (hasFocus) {
-                      if (hasFocus) {
-                        setState(() {
-                          hasSearchFocus = true;
-                        });
-                      } else {
-                        setState(() {
-                          hasSearchFocus = false;
-                        });
-                      }
+                      setState(() {
+                        hasSearchFocus = hasFocus;
+                      });
                     },
-                    child: TextFormField(
-                      controller: _controller,
-                      textAlign: TextAlign.left,
-                      autovalidateMode: AutovalidateMode.always,
-                      style: Theme.of(context).textTheme.bodySmall,
-                      decoration: InputDecoration(
-                        contentPadding:
-                            (MediaQuery.of(context).size.width < 450 ||
-                                    MediaQuery.of(context).size.height < 450)
-                                ? const EdgeInsets.only(top: -15.0)
-                                : const EdgeInsets.only(top: -4.0),
-                        border: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        errorBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
-                        icon: SizedBox(
-                          height: 50,
-                          width: 35,
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                left: 10, bottom: 5, top: 7, right: 0),
-                            child: isSearchButtonDisabled != true
-                                ? hasSearchFocus == false
-                                    ? IconButton(
-                                        highlightColor: Colors.transparent,
-                                        splashColor: Colors.transparent,
-                                        hoverColor: Colors.transparent,
-                                        padding: EdgeInsets.zero,
-                                        onPressed: () {
-                                          submitQuery(_controller.text);
-                                          FocusScope.of(context)
-                                              .requestFocus(FocusNode());
-                                          TextEditingController().clear();
-                                        },
-                                        icon: Icon(
-                                          Icons.search,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary,
-                                        ))
-                                    : IconButton(
-                                        highlightColor: Colors.transparent,
-                                        splashColor: Colors.transparent,
-                                        hoverColor: Colors.transparent,
-                                        padding: EdgeInsets.zero,
-                                        onPressed: () {
-                                          setState(() {
-                                            isSearchButtonDisabled = true;
-                                          });
-                                          _controller.text = '';
-                                        },
-                                        icon: const Icon(Icons.close))
-                                : Icon(
-                                    Icons.search,
-                                    color:
-                                        Theme.of(context).colorScheme.outline,
-                                  ),
+                    child: InkWell(
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(25.7)),
+                      onTap: () {},
+                      onHover: ((value) {
+                        setState(() {
+                          hasHover = value;
+                        });
+                      }),
+                      child: TextFormField(
+                        controller: _controller,
+                        textAlign: TextAlign.left,
+                        autovalidateMode: AutovalidateMode.always,
+                        style: Theme.of(context).textTheme.bodySmall,
+                        decoration: InputDecoration(
+                          contentPadding:
+                              (MediaQuery.of(context).size.width < 450 ||
+                                      MediaQuery.of(context).size.height < 450)
+                                  ? const EdgeInsets.only(top: -15.0)
+                                  : const EdgeInsets.only(top: -4.0),
+                          border: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          errorBorder: InputBorder.none,
+                          disabledBorder: InputBorder.none,
+                          icon: SizedBox(
+                            height: 50,
+                            width: 35,
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 10, bottom: 5, top: 7, right: 0),
+                              child: isSearchButtonDisabled != true
+                                  ? hasSearchFocus == false
+                                      ? IconButton(
+                                          highlightColor: Colors.transparent,
+                                          splashColor: Colors.transparent,
+                                          hoverColor: Colors.transparent,
+                                          padding: EdgeInsets.zero,
+                                          onPressed: () {
+                                            submitQuery(_controller.text);
+                                            FocusScope.of(context)
+                                                .requestFocus(FocusNode());
+                                            TextEditingController().clear();
+                                          },
+                                          icon: Icon(
+                                            Icons.search,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary,
+                                          ))
+                                      : IconButton(
+                                          highlightColor: Colors.transparent,
+                                          splashColor: Colors.transparent,
+                                          hoverColor: Colors.transparent,
+                                          padding: EdgeInsets.zero,
+                                          onPressed: () {
+                                            setState(() {
+                                              isSearchButtonDisabled = true;
+                                            });
+                                            _controller.text = '';
+                                          },
+                                          icon: const Icon(Icons.close))
+                                  : Icon(
+                                      Icons.search,
+                                      color:
+                                          Theme.of(context).colorScheme.outline,
+                                    ),
+                            ),
                           ),
+                          hintText: myChildSize == Size.zero
+                              ? 'Search for a song...'
+                              : (MediaQuery.of(context).size.width < 450 ||
+                                      MediaQuery.of(context).size.height < 450)
+                                  ? 'Search for a song...'
+                                  : 'Search for a song... or piece... or artist...',
+                          hintStyle: Theme.of(context).textTheme.labelSmall,
                         ),
-                        hintText: myChildSize == Size.zero
-                            ? 'Search for a song...'
-                            : (MediaQuery.of(context).size.width < 450 ||
-                                    MediaQuery.of(context).size.height < 450)
-                                ? 'Search for a song...'
-                                : 'Search for a song... or piece... or artist...',
-                        hintStyle: Theme.of(context).textTheme.labelSmall,
+                        onChanged: (String? value) {
+                          setState(() {
+                            (value == null || value.isEmpty)
+                                ? isSearchButtonDisabled = true
+                                : isSearchButtonDisabled = false;
+                          });
+                        },
+                        onFieldSubmitted: (String? value) {
+                          FocusScope.of(context).requestFocus(FocusNode());
+                          TextEditingController().clear();
+                          submitQuery(value ?? '');
+                        },
+                        // validator: (String? value) {
+                        //   return value != null
+                        //       ? value.contains('@')
+                        //           ? 'Do not use the @ char.'
+                        //           : null
+                        //       : null;
+                        // },
                       ),
-                      onChanged: (String? value) {
-                        (value == null || value.isEmpty)
-                            ? setState(() {
-                                isSearchButtonDisabled = true;
-                              })
-                            : setState(() {
-                                isSearchButtonDisabled = false;
-                              });
-                      },
-                      onFieldSubmitted: (String? value) {
-                        FocusScope.of(context).requestFocus(FocusNode());
-                        TextEditingController().clear();
-                        submitQuery(value ?? '');
-                      },
-                      // validator: (String? value) {
-                      //   return value != null
-                      //       ? value.contains('@')
-                      //           ? 'Do not use the @ char.'
-                      //           : null
-                      //       : null;
-                      // },
                     ),
-                  ),
-                )),
+                  )),
+            ),
           ),
         ));
   }
