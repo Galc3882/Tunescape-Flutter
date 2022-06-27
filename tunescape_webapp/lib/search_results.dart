@@ -1,9 +1,11 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:async';
+import 'package:simple_animated_icon/simple_animated_icon.dart';
 
-import 'main.dart';
+import 'search_bar.dart';
 
 class SearchResults extends StatefulWidget {
   final String query;
@@ -28,11 +30,50 @@ class _SearchResults extends State<SearchResults> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.primary,
-      body: Column(
-        children: [
-          Expanded(
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.of(context).popUntil((route) => route.isFirst);
+        return false;
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        body: Column(
+          children: [
+            Expanded(
+                flex: 0,
+                child: (MediaQuery.of(context).size.width < 450 ||
+                        MediaQuery.of(context).size.height < 450)
+                    ? const SizedBox.shrink()
+                    : Container(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                            padding: const EdgeInsets.only(
+                                left: 55.0, top: 35.0, bottom: 10.0),
+                            child: Text(
+                              textAlign: TextAlign.left,
+                              'Tunescape',
+                              style: Theme.of(context).textTheme.titleMedium,
+                              maxLines: 1,
+                            )),
+                      )),
+            Expanded(
+              flex: 0,
+              child: (MediaQuery.of(context).size.width < 450 ||
+                      MediaQuery.of(context).size.height < 450)
+                  ? Padding(
+                      padding: const EdgeInsets.only(top: 15.0),
+                      child: SearchBar(
+                        width: MediaQuery.of(context).size.width,
+                        query: widget.query,
+                      ),
+                    )
+                  : SearchBar(
+                      width: MediaQuery.of(context).size.width,
+                      query: widget.query,
+                    ),
+            ),
+            Expanded(
               flex: 0,
               child: (MediaQuery.of(context).size.width < 450 ||
                       MediaQuery.of(context).size.height < 450)
@@ -40,59 +81,23 @@ class _SearchResults extends State<SearchResults> {
                   : Container(
                       alignment: Alignment.centerLeft,
                       child: Padding(
-                          padding: const EdgeInsets.only(
-                              left: 55.0, top: 35.0, bottom: 10.0),
+                          padding: const EdgeInsets.only(left: 55.0, top: 15.0),
                           child: Text(
                             textAlign: TextAlign.left,
-                            'Tunescape',
-                            style: Theme.of(context).textTheme.titleMedium,
+                            'Search results',
+                            style: Theme.of(context).textTheme.bodyMedium,
                             maxLines: 1,
                           )),
-                    )),
-          Expanded(
-            flex: 0,
-            child: (MediaQuery.of(context).size.width < 450 ||
-                    MediaQuery.of(context).size.height < 450)
-                ? Padding(
-                    padding: const EdgeInsets.only(top: 15.0),
-                    child: SearchBar(
-                      width: MediaQuery.of(context).size.width,
-                      query: widget.query,
                     ),
-                  )
-                : SearchBar(
-                    width: MediaQuery.of(context).size.width,
-                    query: widget.query,
-                  ),
-          ),
-          Expanded(
-            flex: 0,
-            child: (MediaQuery.of(context).size.width < 450 ||
-                    MediaQuery.of(context).size.height < 450)
-                ? const SizedBox.shrink()
-                : Container(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                        padding: const EdgeInsets.only(left: 55.0, top: 15.0),
-                        child: Text(
-                          textAlign: TextAlign.left,
-                          isSearchResultsCompleted
-                              ? results[0].length == 1
-                                  ? 'Found 1 song: '
-                                  : 'Found ${results.length} songs: '
-                              : 'Searching...',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                          maxLines: 1,
-                        )),
-                  ),
-          ),
-          Expanded(
-            flex: 1,
-            child: SearchResultsContainer(
-                isSearchResultsCompleted: isSearchResultsCompleted,
-                results: results),
-          ),
-        ],
+            ),
+            Expanded(
+              flex: 1,
+              child: SearchResultsContainer(
+                  isSearchResultsCompleted: isSearchResultsCompleted,
+                  results: results),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -168,7 +173,58 @@ class SearchResultsContainer extends StatefulWidget {
   State<SearchResultsContainer> createState() => _SearchResultsContainer();
 }
 
-class _SearchResultsContainer extends State<SearchResultsContainer> {
+class _SearchResultsContainer extends State<SearchResultsContainer>
+    with TickerProviderStateMixin {
+  List<int> addedSongs = [];
+
+  List<String>? initialSavedSongs = [];
+
+  bool isInit = false;
+  final List<AnimationController> _animController = [];
+  final List<Animation<double>> _progress = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getSavedSongs();
+  }
+
+  @override
+  void dispose() {
+    if (isInit) {
+      for (var i = 0; i < _animController.length; i++) {
+        _animController[i].dispose();
+      }
+    }
+    super.dispose();
+  }
+
+  void getSavedSongs() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      initialSavedSongs = prefs.getStringList('songs');
+    });
+  }
+
+  void animInit() {
+    if (!isInit) {
+      for (int i = 0; i < widget.results.length; i++) {
+        _animController.add(AnimationController(
+            vsync: this, duration: const Duration(milliseconds: 200)));
+        _progress.add(Tween(begin: 0.0, end: 1.0).animate(
+            CurvedAnimation(parent: _animController[i], curve: Curves.easeIn))
+          ..addListener(() {
+            setState(() {});
+          }));
+        if (songSaved(i)) {
+          _animController[i].forward(from: 1);
+          addedSongs.add(i);
+        }
+      }
+      isInit = true;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -259,7 +315,7 @@ class _SearchResultsContainer extends State<SearchResultsContainer> {
             style: Theme.of(context).textTheme.bodyMedium,
             textScaleFactor: (MediaQuery.of(context).size.width < 450 ||
                     MediaQuery.of(context).size.height < 450)
-                ? 0.8
+                ? 0.7
                 : 1,
           ),
           subtitle: Text(
@@ -287,17 +343,57 @@ class _SearchResultsContainer extends State<SearchResultsContainer> {
                   color: Theme.of(context).colorScheme.tertiaryContainer,
                   child: InkWell(
                     borderRadius: BorderRadius.circular(25.7),
+                    hoverColor: Theme.of(context).colorScheme.onSurface,
                     onTap: () {
-                      // TODO: Add functionality to add button
+                      animInit();
+                      if (addedSongs.contains(index)) {
+                        setState(() {
+                          if (_animController[index].isAnimating) {
+                            _animController[index].stop();
+                          }
+                          _animController[index].reverse();
+
+                          addedSongs.remove(index);
+                          removeSong(
+                              '${widget.results[index][0]}\u0000${widget.results[index][1]}');
+                        });
+                      } else {
+                        setState(() {
+                          if (_animController[index].isAnimating) {
+                            _animController[index].stop();
+                          }
+                          _animController[index].forward();
+                          addedSongs.add(index);
+                          addSong(
+                              '${widget.results[index][0]}\u0000${widget.results[index][1]}');
+                        });
+                      }
                     },
-                    child: Icon(
-                      Icons.add,
-                      size: (MediaQuery.of(context).size.width < 450 ||
-                              MediaQuery.of(context).size.height < 450)
-                          ? 25.0
-                          : 30.0,
-                      color: Theme.of(context).colorScheme.onTertiaryContainer,
-                    ),
+                    child: (_progress.isEmpty)
+                        ? Icon(
+                            songSaved(index) ? Icons.check : Icons.add,
+                            size: (MediaQuery.of(context).size.width < 450 ||
+                                    MediaQuery.of(context).size.height < 450)
+                                ? 30.0
+                                : 35.0,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onTertiaryContainer,
+                          )
+                        : Center(
+                            child: SimpleAnimatedIcon(
+                              startIcon: Icons.add,
+                              endIcon: Icons.check,
+                              progress: _progress[index],
+                              size: (MediaQuery.of(context).size.width < 450 ||
+                                      MediaQuery.of(context).size.height < 450)
+                                  ? 30.0
+                                  : 35.0,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onTertiaryContainer,
+                            ),
+                          ),
                   ),
                 ),
               )
@@ -310,5 +406,39 @@ class _SearchResultsContainer extends State<SearchResultsContainer> {
         ),
       ],
     );
+  }
+
+  songSaved(index) {
+    if (initialSavedSongs != null) {
+      if (initialSavedSongs!.contains(
+          '${widget.results[index][0]}\u0000${widget.results[index][1]}')) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    return false;
+  }
+}
+
+void addSong(String key) async {
+  final prefs = await SharedPreferences.getInstance();
+  final List<String>? songs = prefs.getStringList('songs');
+  if (songs == null) {
+    await prefs.setStringList('songs', <String>[key]);
+  } else {
+    if (!songs.contains(key)) {
+      songs.add(key);
+      await prefs.setStringList('songs', songs);
+    }
+  }
+}
+
+void removeSong(String key) async {
+  final prefs = await SharedPreferences.getInstance();
+  final List<String>? songs = prefs.getStringList('songs');
+  if (songs != null) {
+    songs.remove(key);
+    await prefs.setStringList('songs', songs);
   }
 }
