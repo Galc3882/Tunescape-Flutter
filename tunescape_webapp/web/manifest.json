@@ -1,11 +1,11 @@
 {
-    "name": "tunescape_webapp",
-    "short_name": "tunescape_webapp",
+    "name": "Tunescape",
+    "short_name": "Tunescape",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Tunescape is a music recommendation platform that revolutionizes the music discovery process. Get music tailored to your taste based on your listening history.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

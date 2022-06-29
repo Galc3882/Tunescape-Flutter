@@ -29,7 +29,7 @@ class _SongListDrawer extends State<SongListDrawer> {
             ),
             Expanded(
               child: ListView.builder(
-                  itemCount: 4, //!
+                  itemCount: 4, // TODO: get this from the database
                   itemBuilder: (context, index) {
                     return Container(
                       height: 60,
