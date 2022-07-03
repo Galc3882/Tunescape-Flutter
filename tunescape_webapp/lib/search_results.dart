@@ -6,6 +6,7 @@ import 'dart:async';
 import 'package:simple_animated_icon/simple_animated_icon.dart';
 
 import 'search_bar.dart';
+import 'song_list.dart';
 
 class SearchResults extends StatefulWidget {
   final String query;
@@ -17,6 +18,9 @@ class SearchResults extends StatefulWidget {
 }
 
 class _SearchResults extends State<SearchResults> {
+  final GlobalKey<_SearchResultsContainer> searchResultsContainerKey =
+      GlobalKey();
+
   List<List<String>> results = [[]];
   bool isSearchResultsCompleted = false;
 
@@ -36,7 +40,34 @@ class _SearchResults extends State<SearchResults> {
         return false;
       },
       child: Scaffold(
+        onEndDrawerChanged: (bool value) async {
+          if (!value) {
+            searchResultsContainerKey.currentState!.isInit = false;
+            await searchResultsContainerKey.currentState!.getSavedSongs();
+            searchResultsContainerKey.currentState!.animInit();
+            searchResultsContainerKey.currentState!.setState(() {});
+          }
+        },
         resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          elevation: 0,
+          actions: <Widget>[
+            Builder(builder: (BuildContext context) {
+              return Padding(
+                  padding: const EdgeInsets.only(top: 10.0, right: 10.0),
+                  child: IconButton(
+                    splashRadius: 20,
+                    icon: const Icon(Icons.arrow_back_ios_new),
+                    onPressed: () => Scaffold.of(context).openEndDrawer(),
+                  ));
+            })
+          ],
+        ),
+        endDrawer: Drawer(
+          width: 400,
+          backgroundColor: Theme.of(context).colorScheme.secondary,
+          child: const SongListDrawer(),
+        ),
         backgroundColor: Theme.of(context).colorScheme.primary,
         body: Column(
           children: [
@@ -93,6 +124,7 @@ class _SearchResults extends State<SearchResults> {
             Expanded(
               flex: 1,
               child: SearchResultsContainer(
+                  key: searchResultsContainerKey,
                   isSearchResultsCompleted: isSearchResultsCompleted,
                   results: results),
             ),
@@ -175,7 +207,7 @@ class SearchResultsContainer extends StatefulWidget {
 
 class _SearchResultsContainer extends State<SearchResultsContainer>
     with TickerProviderStateMixin {
-  List<int> addedSongs = [];
+  Set<int> addedSongs = <int>{};
 
   List<String>? initialSavedSongs = [];
 
@@ -199,29 +231,35 @@ class _SearchResultsContainer extends State<SearchResultsContainer>
     super.dispose();
   }
 
-  void getSavedSongs() async {
+  Future<bool> getSavedSongs() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       initialSavedSongs = prefs.getStringList('songs');
     });
+    return true;
   }
 
   void animInit() {
     if (!isInit) {
-      for (int i = 0; i < widget.results.length; i++) {
-        _animController.add(AnimationController(
-            vsync: this, duration: const Duration(milliseconds: 200)));
-        _progress.add(Tween(begin: 0.0, end: 1.0).animate(
-            CurvedAnimation(parent: _animController[i], curve: Curves.easeIn))
-          ..addListener(() {
-            setState(() {});
-          }));
-        if (songSaved(i)) {
-          _animController[i].forward(from: 1);
-          addedSongs.add(i);
+      setState(() {
+        for (int i = 0; i < widget.results.length; i++) {
+          _animController.add(AnimationController(
+              vsync: this, duration: const Duration(milliseconds: 200)));
+          _progress.add(Tween(begin: 0.0, end: 1.0).animate(
+              CurvedAnimation(parent: _animController[i], curve: Curves.easeIn))
+            ..addListener(() {
+              setState(() {});
+            }));
+          if (songSaved(i)) {
+            _animController[i].forward(from: 1);
+            addedSongs.add(i);
+          } else {
+            _animController[i].reverse(from: 0);
+            addedSongs.remove(i);
+          }
         }
-      }
-      isInit = true;
+        isInit = true;
+      });
     }
   }
 
@@ -400,9 +438,9 @@ class _SearchResultsContainer extends State<SearchResultsContainer>
             ],
           ),
           tileColor: Colors.transparent,
-          onTap: () {
-            // TODO: Add functionality to show song
-          },
+          // onTap: () {
+          //    TODO: Add functionality to show song
+          // },
         ),
       ],
     );

@@ -43,15 +43,22 @@ class _MyHomePageState extends State<MyHomePage> {
         elevation: 0,
         actions: <Widget>[
           Builder(builder: (BuildContext context) {
-            return IconButton(
-              splashRadius: 20,
-              icon: const Icon(Icons.arrow_back_ios_new),
-              onPressed: () => Scaffold.of(context).openEndDrawer(),
+            return Padding(
+              padding: const EdgeInsets.only(top: 10.0, right: 10.0),
+              child: IconButton(
+                splashRadius: 20,
+                icon: const Icon(Icons.arrow_back_ios_new),
+                onPressed: () => Scaffold.of(context).openEndDrawer(),
+              ),
             );
           })
         ],
       ),
-      endDrawer: const SongListDrawer(),
+      endDrawer: Drawer(
+        width: 400,
+        backgroundColor: Theme.of(context).colorScheme.secondary,
+        child: const SongListDrawer(),
+      ),
       backgroundColor: Theme.of(context).colorScheme.primary,
       body: Center(
         child: Column(
