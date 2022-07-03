@@ -70,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     left: 35.0,
                     right: 35.0,
                     bottom: 10.0,
-                    top: MediaQuery.of(context).size.height / 2 - 150.0),
+                    top: MediaQuery.of(context).size.height / 2 - 200.0),
                 child: FittedBox(
                     fit: BoxFit.fitWidth,
                     child: Text(

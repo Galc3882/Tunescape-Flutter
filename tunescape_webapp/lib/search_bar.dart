@@ -53,8 +53,11 @@ class _SearchBar extends State<SearchBar> with TickerProviderStateMixin {
         setState(() {});
       });
 
+    // TODO: add support to double click to select word and tripple click to select line
+
     //!aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
     _textController.text = 'dart';
+
     isSearchButtonDisabled = false;
     hasSearchFocus = false;
     //!aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -136,6 +139,8 @@ class _SearchBar extends State<SearchBar> with TickerProviderStateMixin {
                         });
                       }),
                       child: TextFormField(
+                        mouseCursor: SystemMouseCursors.text,
+                        enableInteractiveSelection: true,
                         controller: _textController,
                         textAlign: TextAlign.left,
                         autovalidateMode: AutovalidateMode.always,

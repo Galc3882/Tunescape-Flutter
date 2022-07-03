@@ -79,13 +79,21 @@ class _SearchResults extends State<SearchResults> {
                     : Container(
                         alignment: Alignment.centerLeft,
                         child: Padding(
-                            padding: const EdgeInsets.only(
-                                left: 55.0, top: 35.0, bottom: 10.0),
-                            child: Text(
-                              textAlign: TextAlign.left,
-                              'Tunescape',
-                              style: Theme.of(context).textTheme.titleMedium,
-                              maxLines: 1,
+                            padding:
+                                const EdgeInsets.only(left: 55.0, bottom: 10.0),
+                            child: MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              child: TextButton(
+                                child: Text(
+                                  textAlign: TextAlign.left,
+                                  'Tunescape',
+                                  style:
+                                      Theme.of(context).textTheme.titleMedium,
+                                  maxLines: 1,
+                                ),
+                                onPressed: () => Navigator.of(context)
+                                    .popUntil((route) => route.isFirst),
+                              ),
                             )),
                       )),
             Expanded(

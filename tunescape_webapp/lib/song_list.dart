@@ -95,7 +95,13 @@ class _SongListDrawer extends State<SongListDrawer> {
               child: InkWell(
                 child: Text('Recommend',
                     style: Theme.of(context).textTheme.bodyMedium),
-                onTap: () {},
+                onTap: () {
+                  // TODO: implement RecommendSongPage
+                  // Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //         builder: (context) => RecommendSongPage()));
+                },
               ),
             ),
           ),
