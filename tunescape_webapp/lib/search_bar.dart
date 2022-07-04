@@ -53,7 +53,7 @@ class _SearchBar extends State<SearchBar> with TickerProviderStateMixin {
         setState(() {});
       });
 
-    // TODO: add support to double click to select word and tripple click to select line
+    // TODO: add support to double click to select word and tripple click to select line using TextSelectionGestureDetector maybe
 
     //!aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
     _textController.text = 'dart';

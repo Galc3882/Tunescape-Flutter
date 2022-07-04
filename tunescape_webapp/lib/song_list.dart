@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-// import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:http/http.dart' as http;
+import 'recommend_songs.dart';
 
 class SongListDrawer extends StatefulWidget {
   const SongListDrawer({Key? key}) : super(key: key);
@@ -82,30 +81,32 @@ class _SongListDrawer extends State<SongListDrawer> {
                 return savedSongContainer(index);
               }),
         ),
-        Center(
-            child: Padding(
-          padding: const EdgeInsets.only(top: 10.0, bottom: 20.0),
-          child: Container(
-            decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.tertiaryContainer,
-                borderRadius: const BorderRadius.all(Radius.circular(25.7))),
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  top: 10.0, bottom: 13.0, left: 15.0, right: 15.0),
-              child: InkWell(
-                child: Text('Recommend',
-                    style: Theme.of(context).textTheme.bodyMedium),
-                onTap: () {
-                  // TODO: implement RecommendSongPage
-                  // Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //         builder: (context) => RecommendSongPage()));
-                },
-              ),
-            ),
-          ),
-        ))
+        savedSongs.isNotEmpty
+            ? Center(
+                child: Padding(
+                padding: const EdgeInsets.only(top: 10.0, bottom: 20.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.tertiaryContainer,
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(25.7))),
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 10.0, bottom: 13.0, left: 15.0, right: 15.0),
+                    child: InkWell(
+                      child: Text('Recommend',
+                          style: Theme.of(context).textTheme.bodyMedium),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const RecommendSongs()));
+                      },
+                    ),
+                  ),
+                ),
+              ))
+            : const SizedBox.shrink(),
       ],
     );
   }

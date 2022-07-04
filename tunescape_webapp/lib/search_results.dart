@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'package:simple_animated_icon/simple_animated_icon.dart';
@@ -306,11 +307,16 @@ class _SearchResultsContainer extends State<SearchResultsContainer>
                         ),
                       )
                 : SizedBox(
-                    height: 60.0,
-                    width: 60.0,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 6.0,
-                      color: Theme.of(context).colorScheme.primaryContainer,
+                    height: (MediaQuery.of(context).size.width < 450 ||
+                            MediaQuery.of(context).size.height < 450)
+                        ? 100.0
+                        : 200.0,
+                    width: (MediaQuery.of(context).size.width < 450 ||
+                            MediaQuery.of(context).size.height < 450)
+                        ? 100.0
+                        : 200.0,
+                    child: const LoadingIndicator(
+                      indicatorType: Indicator.audioEqualizer,
                     )),
           ),
         ),
