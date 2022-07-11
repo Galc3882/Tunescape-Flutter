@@ -20,6 +20,9 @@ class _SearchBar extends State<SearchBar> with TickerProviderStateMixin {
   bool hasSearchFocus = false;
   bool hasHover = false;
 
+  int lastTap = DateTime.now().millisecondsSinceEpoch;
+  int consecutiveTaps = 0;
+
   late AnimationController _animController;
   late Animation<double> curve;
   late Animation<Color?> colorTween;
@@ -52,15 +55,6 @@ class _SearchBar extends State<SearchBar> with TickerProviderStateMixin {
       ..addListener(() {
         setState(() {});
       });
-
-    // TODO: add support to double click to select word and tripple click to select line using TextSelectionGestureDetector maybe
-
-    //!aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-    _textController.text = 'dart';
-
-    isSearchButtonDisabled = false;
-    hasSearchFocus = false;
-    //!aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 
     if (widget.query != null) {
       _textController.text = widget.query!;
@@ -139,6 +133,25 @@ class _SearchBar extends State<SearchBar> with TickerProviderStateMixin {
                         });
                       }),
                       child: TextFormField(
+                        onTap: () {
+                          int now = DateTime.now().millisecondsSinceEpoch;
+                          if (now - lastTap < 500) {
+                            consecutiveTaps++;
+                            if (consecutiveTaps == 1) {
+                              _textController.selection = TextSelection(
+                                  baseOffset:
+                                      _textController.text.lastIndexOf(' '),
+                                  extentOffset: _textController.text.length);
+                            } else if (consecutiveTaps > 1) {
+                              _textController.selection = TextSelection(
+                                  baseOffset: 0,
+                                  extentOffset: _textController.text.length);
+                            }
+                          } else {
+                            consecutiveTaps = 0;
+                          }
+                          lastTap = now;
+                        },
                         mouseCursor: SystemMouseCursors.text,
                         enableInteractiveSelection: true,
                         controller: _textController,
@@ -253,14 +266,17 @@ class _SearchBar extends State<SearchBar> with TickerProviderStateMixin {
     if (query.isNotEmpty && query != '') {
       Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (context) => GestureDetector(
+          PageRouteBuilder(
+            pageBuilder: (c, a1, a2) => GestureDetector(
               onTap: () {
-                FocusScope.of(context).requestFocus(FocusNode());
+                FocusScope.of(c).requestFocus(FocusNode());
                 TextEditingController().clear();
               },
               child: SearchResults(query: query),
             ),
+            transitionsBuilder: (c, anim, a2, child) =>
+                FadeTransition(opacity: anim, child: child),
+            transitionDuration: const Duration(milliseconds: 500),
           ));
     }
   }

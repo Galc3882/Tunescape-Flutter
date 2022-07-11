@@ -15,9 +15,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'Tunescape',
-        theme: MediaQuery.of(context).platformBrightness == Brightness.dark
-            ? darkTheme
-            : lightTheme,
+        theme:
+            // MediaQuery.of(context).platformBrightness == Brightness.dark
+            //     ? darkTheme
+            //     :
+            lightTheme,
         home: GestureDetector(
             onTap: () {
               FocusScope.of(context).requestFocus(FocusNode());
