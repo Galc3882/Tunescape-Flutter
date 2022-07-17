@@ -274,10 +274,10 @@ class _RecommendSongsContainer extends State<RecommendSongsContainer> {
             progressColor: Color([
               0xFFFF0D0D,
               0xFFFF4E11,
-              0xFFFF8E15,
-              0xFFACB334,
-              0xFF92E000,
-              0xFF2AA10F
+              0xFFdfdd19,
+              0xFF246632,
+              0xFF194823,
+              0xFF174220
             ][max(
                 0,
                 (((double.parse(widget.recommendSongs[index][1]) - 0.5) * 5)

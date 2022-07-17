@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import 'theme.dart';
 import 'search_bar.dart';
@@ -37,6 +38,19 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  @override
+  void initState() {
+    super.initState();
+    initDatabase();
+  }
+
+  void initDatabase() async {
+    const url = 'https://song-recommendation-tunescape.herokuapp.com/api/';
+    await http.get(
+      Uri.parse('${url}loaddata'),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -5,6 +5,7 @@ import 'package:loading_indicator/loading_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'package:simple_animated_icon/simple_animated_icon.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'search_bar.dart';
 import 'song_list.dart';
@@ -163,31 +164,12 @@ class _SearchResults extends State<SearchResults> {
             isSearchResultsCompleted = true;
           });
         } else {
-          var response = await http.get(
-            Uri.parse('${url}loaddata'),
-          );
-          response = await http.get(
-            Uri.parse('${url}songs?name=$query'),
-          );
-          if (response.body.contains('array')) {
-            JsonDecoder decoder = const JsonDecoder();
-            setState(() {
-              results =
-                  ((decoder.convert(response.body)['array'] as List<dynamic>)
-                      .map((e) {
-                return (e as List<dynamic>).map((e) => e.toString()).toList();
-              }).toList());
-
-              isSearchResultsCompleted = true;
-            });
-          } else {
-            setState(() {
-              results = [
-                [response.body]
-              ];
-              isSearchResultsCompleted = true;
-            });
-          }
+          setState(() {
+            results = [
+              [response.body]
+            ];
+            isSearchResultsCompleted = true;
+          });
         }
       }
     } catch (e) {
@@ -351,16 +333,10 @@ class _SearchResultsContainer extends State<SearchResultsContainer>
                   left: 35.0, right: 35.0, bottom: 15.0, top: 5.0),
           dense: true,
           visualDensity: const VisualDensity(vertical: 4.0),
-          leading: Container(
-            width: 65,
-            height: 65,
-            color: Colors.white,
-            child: const Center(
-              child: Icon(
-                Icons.music_note,
-                size: 30,
-              ),
-            ),
+          leading: SizedBox(
+            width: 90.0,
+            height: 90.0,
+            child: Image.network(widget.results[index][3]),
           ),
           title: Text(
             widget.results[index][0],
@@ -378,92 +354,115 @@ class _SearchResultsContainer extends State<SearchResultsContainer>
                 ? 0.6
                 : 0.7,
           ),
-          trailing: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                height: (MediaQuery.of(context).size.width < 450 ||
-                        MediaQuery.of(context).size.height < 450)
-                    ? 40.0
-                    : 50.0,
-                width: (MediaQuery.of(context).size.width < 450 ||
-                        MediaQuery.of(context).size.height < 450)
-                    ? 40.0
-                    : 50.0,
-                child: Material(
-                  borderRadius: BorderRadius.circular(25.7),
-                  color: Theme.of(context).colorScheme.tertiaryContainer,
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(25.7),
-                    hoverColor: Theme.of(context).colorScheme.onSurface,
-                    onTap: () {
-                      animInit();
-                      if (addedSongs.contains(index)) {
-                        setState(() {
-                          if (_animController[index].isAnimating) {
-                            _animController[index].stop();
-                          }
-                          _animController[index].reverse();
-
-                          addedSongs.remove(index);
-                          removeSong(
-                              '${widget.results[index][0]}\u0000${widget.results[index][1]}');
-                        });
-                      } else {
-                        setState(() {
-                          if (_animController[index].isAnimating) {
-                            _animController[index].stop();
-                          }
-                          _animController[index].forward();
-                          addedSongs.add(index);
-                          addSong(
-                              '${widget.results[index][0]}\u0000${widget.results[index][1]}');
-                        });
-                      }
-                    },
-                    child: (_progress.isEmpty)
-                        ? Icon(
-                            songSaved(index) ? Icons.check : Icons.add,
-                            size: (MediaQuery.of(context).size.width < 450 ||
-                                    MediaQuery.of(context).size.height < 450)
-                                ? 30.0
-                                : 35.0,
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onTertiaryContainer,
-                          )
-                        : Center(
-                            child: SimpleAnimatedIcon(
-                              startIcon: Icons.add,
-                              endIcon: Icons.check,
-                              progress: _progress[index],
-                              size: (MediaQuery.of(context).size.width < 450 ||
-                                      MediaQuery.of(context).size.height < 450)
-                                  ? 30.0
-                                  : 35.0,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onTertiaryContainer,
-                            ),
-                          ),
-                  ),
+          trailing: SizedBox(
+            width: 100.0,
+            child: Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 10.0),
+                  child: Text(widget.results[index][2],
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      textScaleFactor:
+                          (MediaQuery.of(context).size.width < 450 ||
+                                  MediaQuery.of(context).size.height < 450)
+                              ? 0.6
+                              : 0.7),
                 ),
-              )
-            ],
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: (MediaQuery.of(context).size.width < 450 ||
+                              MediaQuery.of(context).size.height < 450)
+                          ? 40.0
+                          : 50.0,
+                      width: (MediaQuery.of(context).size.width < 450 ||
+                              MediaQuery.of(context).size.height < 450)
+                          ? 40.0
+                          : 50.0,
+                      child: Material(
+                        borderRadius: BorderRadius.circular(25.7),
+                        color: Theme.of(context).colorScheme.tertiaryContainer,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(25.7),
+                          hoverColor: Theme.of(context).colorScheme.onSurface,
+                          onTap: () {
+                            animInit();
+                            if (addedSongs.contains(index)) {
+                              setState(() {
+                                if (_animController[index].isAnimating) {
+                                  _animController[index].stop();
+                                }
+                                _animController[index].reverse();
+
+                                addedSongs.remove(index);
+                                removeSong(
+                                    '${widget.results[index][0]}\u0000${widget.results[index][1]}\u0000${widget.results[index][8]}');
+                              });
+                            } else {
+                              setState(() {
+                                if (_animController[index].isAnimating) {
+                                  _animController[index].stop();
+                                }
+                                _animController[index].forward();
+                                addedSongs.add(index);
+                                addSong(
+                                    '${widget.results[index][0]}\u0000${widget.results[index][1]}\u0000${widget.results[index][8]}');
+                              });
+                            }
+                          },
+                          child: (_progress.isEmpty)
+                              ? Icon(
+                                  songSaved(index) ? Icons.check : Icons.add,
+                                  size: (MediaQuery.of(context).size.width <
+                                              450 ||
+                                          MediaQuery.of(context).size.height <
+                                              450)
+                                      ? 30.0
+                                      : 35.0,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onTertiaryContainer,
+                                )
+                              : Center(
+                                  child: SimpleAnimatedIcon(
+                                    startIcon: Icons.add,
+                                    endIcon: Icons.check,
+                                    progress: _progress[index],
+                                    size: (MediaQuery.of(context).size.width <
+                                                450 ||
+                                            MediaQuery.of(context).size.height <
+                                                450)
+                                        ? 30.0
+                                        : 35.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onTertiaryContainer,
+                                  ),
+                                ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
           ),
           tileColor: Colors.transparent,
-          // onTap: () {
-          //    TODO: Add functionality to show song
-          // },
+          onTap: () async {
+            if (await canLaunchUrl(Uri.parse(widget.results[index][7]))) {
+              await launchUrl(Uri.parse(widget.results[index][7]));
+            }
+          },
         ),
       ],
     );
   }
 
   songSaved(index) {
-    if (initialSavedSongs != null) {
+    if (initialSavedSongs != [] && initialSavedSongs != null) {
       if (initialSavedSongs!.contains(
-          '${widget.results[index][0]}\u0000${widget.results[index][1]}')) {
+          '${widget.results[index][0]}\u0000${widget.results[index][1]}\u0000${widget.results[index][8]}')) {
         return true;
       } else {
         return false;

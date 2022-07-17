@@ -31,9 +31,6 @@ class _SongListDrawer extends State<SongListDrawer>
     for (var i = 0; i < _animController.length; i++) {
       _animController[i].dispose();
     }
-    if (savedSongs.isNotEmpty) {
-      _animController[savedSongs.length].dispose();
-    }
     super.dispose();
   }
 
