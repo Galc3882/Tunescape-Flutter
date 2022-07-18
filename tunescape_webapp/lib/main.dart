@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'theme.dart';
 import 'search_bar.dart';
 import 'song_list.dart';
+import 'lower_default.dart';
 
 void main() {
   runApp(const MediaQuery(data: MediaQueryData(), child: MyApp()));
@@ -95,6 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       maxLines: 1,
                     ))),
             const Center(child: SearchBar(width: 600)),
+            const Expanded(child: DefaultLower(isLogo: true)),
           ],
         ),
       ),

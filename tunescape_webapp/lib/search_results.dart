@@ -10,6 +10,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'search_bar.dart';
 import 'song_list.dart';
 
+import 'lower_default.dart';
+
 class SearchResults extends StatefulWidget {
   final String query;
 
@@ -138,6 +140,7 @@ class _SearchResults extends State<SearchResults> {
                   isSearchResultsCompleted: isSearchResultsCompleted,
                   results: results),
             ),
+            const DefaultLower(isLogo: false),
           ],
         ),
       ),

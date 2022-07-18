@@ -8,6 +8,8 @@ import 'package:loading_indicator/loading_indicator.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'lower_default.dart';
+
 class RecommendSongs extends StatefulWidget {
   const RecommendSongs({Key? key}) : super(key: key);
 
@@ -85,6 +87,7 @@ class _RecommendSongs extends State<RecommendSongs> {
                   recommendSongs: recommendSongs,
                   isSearchResultsCompleted: isSearchResultsCompleted),
             ),
+            const DefaultLower(isLogo: false),
           ],
         ),
       ),
