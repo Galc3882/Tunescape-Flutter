@@ -260,6 +260,8 @@ class _RecommendSongsContainer extends State<RecommendSongsContainer> {
             ),
           ),
           LinearPercentIndicator(
+            center: Text('${widget.recommendSongs[index][1]}%',
+                style: Theme.of(context).textTheme.labelSmall),
             width: (MediaQuery.of(context).size.width < 450 ||
                     MediaQuery.of(context).size.height < 450)
                 ? 100.0
@@ -276,16 +278,15 @@ class _RecommendSongsContainer extends State<RecommendSongsContainer> {
             backgroundColor: Theme.of(context).colorScheme.primaryContainer,
             progressColor: Color([
               0xFFFF0D0D,
-              0xFFFF4E11,
-              0xFFdfdd19,
-              0xFF246632,
-              0xFF194823,
-              0xFF174220
+              0xFFfefb01,
+              0xFFcefb02,
+              0xFF87fa00,
+              0xFF3af901,
+              0xFF00ED01
             ][max(
                 0,
-                (((double.parse(widget.recommendSongs[index][1]) - 0.5) * 5)
-                        .round()) *
-                    2)]),
+                (((double.parse(widget.recommendSongs[index][1]) - 0.67) * 15)
+                    .round()))]),
           ),
         ]),
       )
