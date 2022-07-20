@@ -260,7 +260,8 @@ class _RecommendSongsContainer extends State<RecommendSongsContainer> {
             ),
           ),
           LinearPercentIndicator(
-            center: Text('${widget.recommendSongs[index][1]}%',
+            center: Text(
+                '${widget.recommendSongs[index][1][widget.recommendSongs[index][1].indexOf('.') + 1] + widget.recommendSongs[index][1][widget.recommendSongs[index][1].indexOf('.') + 2]}%',
                 style: Theme.of(context).textTheme.labelSmall),
             width: (MediaQuery.of(context).size.width < 450 ||
                     MediaQuery.of(context).size.height < 450)
