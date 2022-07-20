@@ -44,106 +44,134 @@ class _SearchResults extends State<SearchResults> {
         return false;
       },
       child: Scaffold(
-        onEndDrawerChanged: (bool value) async {
-          if (!value) {
-            searchResultsContainerKey.currentState!.isInit = false;
-            await searchResultsContainerKey.currentState!.getSavedSongs();
-            searchResultsContainerKey.currentState!.animInit();
-            searchResultsContainerKey.currentState!.setState(() {});
-          }
-        },
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          elevation: 0,
-          actions: <Widget>[
-            Builder(builder: (BuildContext context) {
-              return Padding(
-                  padding: const EdgeInsets.only(top: 10.0, right: 10.0),
-                  child: IconButton(
-                    splashRadius: 20,
-                    icon: const Icon(Icons.arrow_back_ios_new),
-                    onPressed: () => Scaffold.of(context).openEndDrawer(),
-                  ));
-            })
-          ],
-        ),
-        endDrawer: Drawer(
-          width: 400,
-          backgroundColor: Theme.of(context).colorScheme.secondary,
-          child: const SongListDrawer(),
-        ),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        body: Column(
-          children: [
-            Expanded(
-                flex: 0,
-                child: (MediaQuery.of(context).size.width < 450 ||
-                        MediaQuery.of(context).size.height < 450)
-                    ? const SizedBox.shrink()
-                    : Container(
-                        alignment: Alignment.centerLeft,
-                        child: Padding(
-                            padding:
-                                const EdgeInsets.only(left: 55.0, bottom: 10.0),
-                            child: MouseRegion(
-                              cursor: SystemMouseCursors.click,
-                              child: TextButton(
-                                child: Text(
-                                  textAlign: TextAlign.left,
-                                  'Tunescape',
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium,
-                                  maxLines: 1,
-                                ),
-                                onPressed: () => Navigator.of(context)
-                                    .popUntil((route) => route.isFirst),
-                              ),
-                            )),
-                      )),
-            Expanded(
-              flex: 0,
-              child: (MediaQuery.of(context).size.width < 450 ||
-                      MediaQuery.of(context).size.height < 450)
-                  ? Padding(
-                      padding: const EdgeInsets.only(top: 15.0),
-                      child: SearchBar(
-                        width: MediaQuery.of(context).size.width,
-                        query: widget.query,
-                      ),
-                    )
-                  : SearchBar(
-                      width: MediaQuery.of(context).size.width,
-                      query: widget.query,
+          onEndDrawerChanged: (bool value) async {
+            if (!value) {
+              searchResultsContainerKey.currentState!.isInit = false;
+              await searchResultsContainerKey.currentState!.getSavedSongs();
+              searchResultsContainerKey.currentState!.animInit();
+              searchResultsContainerKey.currentState!.setState(() {});
+            }
+          },
+          resizeToAvoidBottomInset: false,
+          appBar: AppBar(
+            elevation: 0,
+            actions: <Widget>[
+              Builder(builder: (BuildContext context) {
+                return Container(
+                    width: 60,
+                    height: MediaQuery.of(context).size.height,
+                    color: (MediaQuery.of(context).size.width < 720 ||
+                            MediaQuery.of(context).size.height < 450)
+                        ? Colors.transparent
+                        : Theme.of(context).colorScheme.secondary,
+                    child: Padding(
+                        padding: const EdgeInsets.only(top: 10.0, right: 10.0),
+                        child: IconButton(
+                          splashRadius: 20,
+                          icon: const Icon(Icons.arrow_back_ios_new),
+                          onPressed: () => Scaffold.of(context).openEndDrawer(),
+                        )));
+              })
+            ],
+          ),
+          endDrawer: Drawer(
+            width: 400,
+            backgroundColor: Theme.of(context).colorScheme.secondary,
+            child: const SongListDrawer(),
+          ),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          body: Stack(children: [
+            (MediaQuery.of(context).size.width < 720 ||
+                    MediaQuery.of(context).size.height < 450)
+                ? const SizedBox.shrink()
+                : Positioned.fill(
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Container(
+                          height: MediaQuery.of(context).size.height,
+                          width: 60,
+                          color: Theme.of(context).colorScheme.secondary),
                     ),
-            ),
-            Expanded(
-              flex: 0,
-              child: (MediaQuery.of(context).size.width < 450 ||
-                      MediaQuery.of(context).size.height < 450)
-                  ? const SizedBox.shrink()
-                  : Container(
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
-                          padding: const EdgeInsets.only(left: 55.0, top: 15.0),
-                          child: Text(
-                            textAlign: TextAlign.left,
-                            'Search results',
-                            style: Theme.of(context).textTheme.bodyMedium,
-                            maxLines: 1,
+                  ),
+            Column(
+              children: [
+                Expanded(
+                    flex: 0,
+                    child: (MediaQuery.of(context).size.width < 450 ||
+                            MediaQuery.of(context).size.height < 450)
+                        ? const SizedBox.shrink()
+                        : Container(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 55.0, bottom: 10.0),
+                                child: MouseRegion(
+                                  cursor: SystemMouseCursors.click,
+                                  child: TextButton(
+                                    child: Text(
+                                      textAlign: TextAlign.left,
+                                      'Tunescape',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium,
+                                      maxLines: 1,
+                                    ),
+                                    onPressed: () => Navigator.of(context)
+                                        .popUntil((route) => route.isFirst),
+                                  ),
+                                )),
                           )),
-                    ),
+                Expanded(
+                  flex: 0,
+                  child: (MediaQuery.of(context).size.width < 450 ||
+                          MediaQuery.of(context).size.height < 450)
+                      ? Padding(
+                          padding: const EdgeInsets.only(top: 15.0),
+                          child: SearchBar(
+                            width: MediaQuery.of(context).size.width,
+                            query: widget.query,
+                          ),
+                        )
+                      : SearchBar(
+                          width: MediaQuery.of(context).size.width - 160,
+                          query: widget.query,
+                        ),
+                ),
+                Expanded(
+                  flex: 0,
+                  child: (MediaQuery.of(context).size.width < 450 ||
+                          MediaQuery.of(context).size.height < 450)
+                      ? const SizedBox.shrink()
+                      : Container(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 55.0, top: 15.0),
+                              child: Text(
+                                textAlign: TextAlign.left,
+                                'Search results',
+                                style: Theme.of(context).textTheme.bodyMedium,
+                                maxLines: 1,
+                              )),
+                        ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Padding(
+                    padding: (MediaQuery.of(context).size.width < 720 ||
+                            MediaQuery.of(context).size.height < 450)
+                        ? const EdgeInsets.all(0)
+                        : const EdgeInsets.only(right: 40.0),
+                    child: SearchResultsContainer(
+                        key: searchResultsContainerKey,
+                        isSearchResultsCompleted: isSearchResultsCompleted,
+                        results: results),
+                  ),
+                ),
+                const DefaultLower(isLogo: false),
+              ],
             ),
-            Expanded(
-              flex: 1,
-              child: SearchResultsContainer(
-                  key: searchResultsContainerKey,
-                  isSearchResultsCompleted: isSearchResultsCompleted,
-                  results: results),
-            ),
-            const DefaultLower(isLogo: false),
-          ],
-        ),
-      ),
+          ])),
     );
   }
 

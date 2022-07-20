@@ -60,14 +60,21 @@ class _MyHomePageState extends State<MyHomePage> {
         elevation: 0,
         actions: <Widget>[
           Builder(builder: (BuildContext context) {
-            return Padding(
-              padding: const EdgeInsets.only(top: 10.0, right: 10.0),
-              child: IconButton(
-                splashRadius: 20,
-                icon: const Icon(Icons.arrow_back_ios_new),
-                onPressed: () => Scaffold.of(context).openEndDrawer(),
-              ),
-            );
+            return Container(
+                width: 60,
+                height: MediaQuery.of(context).size.height,
+                color: (MediaQuery.of(context).size.width < 720 ||
+                        MediaQuery.of(context).size.height < 450)
+                    ? Colors.transparent
+                    : Theme.of(context).colorScheme.secondary,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 10.0, right: 10.0),
+                  child: IconButton(
+                    splashRadius: 20,
+                    icon: const Icon(Icons.arrow_back_ios_new),
+                    onPressed: () => Scaffold.of(context).openEndDrawer(),
+                  ),
+                ));
           })
         ],
       ),
@@ -77,28 +84,44 @@ class _MyHomePageState extends State<MyHomePage> {
         child: const SongListDrawer(),
       ),
       backgroundColor: Theme.of(context).colorScheme.primary,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-                padding: EdgeInsets.only(
-                    left: 35.0,
-                    right: 35.0,
-                    bottom: 10.0,
-                    top: MediaQuery.of(context).size.height / 2 - 200.0),
-                child: FittedBox(
-                    fit: BoxFit.fitWidth,
-                    child: Text(
-                      'Tunescape',
-                      style: Theme.of(context).textTheme.titleLarge,
-                      maxLines: 1,
-                    ))),
-            const Center(child: SearchBar(width: 600)),
-            const Expanded(child: DefaultLower(isLogo: true)),
-          ],
-        ),
+      body: Stack(
+        children: [
+          (MediaQuery.of(context).size.width < 720 ||
+                  MediaQuery.of(context).size.height < 450)
+              ? const SizedBox.shrink()
+              : Positioned.fill(
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Container(
+                        height: MediaQuery.of(context).size.height,
+                        width: 60,
+                        color: Theme.of(context).colorScheme.secondary),
+                  ),
+                ),
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Padding(
+                    padding: EdgeInsets.only(
+                        left: 35.0,
+                        right: 35.0,
+                        bottom: 10.0,
+                        top: MediaQuery.of(context).size.height / 2 - 200.0),
+                    child: FittedBox(
+                        fit: BoxFit.fitWidth,
+                        child: Text(
+                          'Tunescape',
+                          style: Theme.of(context).textTheme.titleLarge,
+                          maxLines: 1,
+                        ))),
+                const Center(child: SearchBar(width: 580)),
+                const Expanded(child: DefaultLower(isLogo: true)),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -33,17 +33,23 @@ class _DefaultLower extends State<DefaultLower> {
                     ),
                   )
                 : const SizedBox.shrink()),
-        const Divider(
-          color: Color.fromARGB(255, 255, 255, 255),
+        Divider(
+          color: const Color.fromARGB(255, 255, 255, 255),
           height: 1,
           thickness: 2,
-          indent: 35,
-          endIndent: 35,
+          indent: (MediaQuery.of(context).size.width < 720 ||
+                  MediaQuery.of(context).size.height < 450)
+              ? 35
+              : 85,
+          endIndent: (MediaQuery.of(context).size.width < 720 ||
+                  MediaQuery.of(context).size.height < 450)
+              ? 35
+              : 85,
         ),
         Container(
           alignment: Alignment.bottomLeft,
           child: Padding(
-            padding: const EdgeInsets.only(bottom: 6.0, top: 6.0, left: 25),
+            padding: const EdgeInsets.only(bottom: 6.0, top: 6.0, left: 75),
             child: FittedBox(
               fit: BoxFit.fitWidth,
               clipBehavior: Clip.antiAlias,
